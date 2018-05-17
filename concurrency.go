@@ -1,13 +1,13 @@
-package go_study
+package main
 
 import (
 	"fmt"
-	"time"
 	"math/rand"
+	"time"
 )
 
 var (
-	Web = fakeSearch("web")
+	Web   = fakeSearch("web")
 	Image = fakeSearch("image")
 	Video = fakeSearch("video")
 )
@@ -23,11 +23,11 @@ func fakeSearch(kind string) Search {
 	}
 }
 
-func Google(query string) (results []Result)  {
+func Google(query string) (results []Result) {
 	c := make(chan Result)
-	go func() {c <- Web(query)}()
-	go func() {c <- Image(query)}()
-	go func() {c <- Video(query)}()
+	go func() { c <- Web(query) }()
+	go func() { c <- Image(query) }()
+	go func() { c <- Video(query) }()
 	//results = append(results, Web(query))
 	//results = append(results, Image(query))
 	//results = append(results, Video(query))
@@ -35,13 +35,13 @@ func Google(query string) (results []Result)  {
 
 	timeout := time.After(80 * time.Millisecond)
 
-	for i:=0; i<3; i++ {
+	for i := 0; i < 3; i++ {
 		select {
-			case result := <-c:
-				results = append(results, result)
-			case <- timeout:
-				fmt.Println("time out")
-				return
+		case result := <-c:
+			results = append(results, result)
+		case <-timeout:
+			fmt.Println("time out")
+			return
 		}
 		//result := <-c
 		//results = append(results, result)
